@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour {
 
+	int test = 0;
+
 	float Dest = 0.0f;
 	bool SetDown = false;
 	// Use this for initialization
