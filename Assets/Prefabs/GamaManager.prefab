@@ -56,6 +56,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardScript: {fileID: 0}
   inputScript: {fileID: 0}
+  player: {fileID: 114177959054102294, guid: bc311d390e9a4cd4584b53eb49871615, type: 2}
 --- !u!114 &114314303930943232
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -93,11 +94,12 @@ MonoBehaviour:
   CoinCount:
     Minimum: 1
     maximum: 10
-  Enemy: {fileID: 1137006932339080, guid: 39f9e6acb762c584994413acc8d72bd5, type: 2}
-  Sword: {fileID: 1086924505968208, guid: 550b0911732a8974882a033b4d093f71, type: 2}
-  Shield: {fileID: 1315551193621222, guid: 3b5c9b6ff7c4817409cb04c846fac00e, type: 2}
-  Potion: {fileID: 1701815766453868, guid: 770cd088b6aa5f3479b885cc7cb44227, type: 2}
-  Coin: {fileID: 1219589369223032, guid: fd67b07a820e3734892109d7ce272fdb, type: 2}
+  Enemy: {fileID: 1362121737654984, guid: 39f9e6acb762c584994413acc8d72bd5, type: 2}
+  Sword: {fileID: 1693836220363654, guid: 550b0911732a8974882a033b4d093f71, type: 2}
+  Shield: {fileID: 1570243573677474, guid: 3b5c9b6ff7c4817409cb04c846fac00e, type: 2}
+  Potion: {fileID: 1742995072095628, guid: 770cd088b6aa5f3479b885cc7cb44227, type: 2}
+  Coin: {fileID: 1584193220967880, guid: fd67b07a820e3734892109d7ce272fdb, type: 2}
+  deathMark: {fileID: 1438254847885090, guid: 7185373b3ba2f2b459f91d5e54b54923, type: 2}
   DragTiles: []
   threshold: 0.001
   LR: {fileID: 0}

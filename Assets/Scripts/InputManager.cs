@@ -19,9 +19,11 @@ public class InputManager : MonoBehaviour
 			bIsClick = false;
 			GameManager.instance.boardScript.DragOut();
 		}
-
-		if (bIsClick)
-		{
+	}
+    private void FixedUpdate()
+    {
+        if (bIsClick)
+        {/*
 			Vector3 mousePos = Input.mousePosition;     // 마우스 포지션
 			mousePos.z = Camera.main.nearClipPlane;      // 가까운 클리핑 평면 거리 구하기
 														 // 마우스 좌표를 월드 좌표로 변환
@@ -36,8 +38,14 @@ public class InputManager : MonoBehaviour
 			if (hit.collider)
 			{
 				GameManager.instance.boardScript.CheckMatch(hit);
-			}
-		}
-	}
+			}*/
+            Vector2 location = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            Collider2D c = Physics2D.OverlapPoint(location);
+
+            if (c)
+                GameManager.instance.boardScript.CheckMatch(c.gameObject.GetComponent<Tile>());
+        }
+    }
 
 }

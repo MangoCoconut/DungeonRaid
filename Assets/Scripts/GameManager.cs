@@ -7,10 +7,17 @@ public class GameManager : MonoBehaviour {
 	public static GameManager instance = null;
 	public BoardManager boardScript;
 	public InputManager inputScript;
+    public Player player;
 
 	private int level = 1;
+    public int Level
+    {
+        get { return level; }
+    }
 
-	void Awake()
+    private int DragOutCount = 0;//일정 매칭마다 레벨상승
+
+    void Awake()
 	{
 		//Check if instance already exists
 		if (instance == null)
@@ -33,9 +40,9 @@ public class GameManager : MonoBehaviour {
 		//Get a component reference to the attached BoardManager script
 		boardScript = GetComponent<BoardManager>();
 		inputScript = GetComponent<InputManager>();
-
-		//Call the InitGame function to initialize the first level 
-		InitGame();
+        player.Init();
+        //Call the InitGame function to initialize the first level 
+        InitGame();
 	}
 
 	void InitGame()
@@ -52,4 +59,15 @@ public class GameManager : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    public void SetDragOutCount()//일정 매칭마다 레벨상승
+    {
+        DragOutCount++;
+
+        if (DragOutCount == 10)
+        {
+            level++;
+            DragOutCount = 0;
+        }
+    }
 }
