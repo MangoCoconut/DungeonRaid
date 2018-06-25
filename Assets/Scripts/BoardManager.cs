@@ -203,12 +203,18 @@ public class BoardManager : MonoBehaviour {
 	//매치결과 적용
 	public void DragOut()
 	{
-		if (DragTiles.Count >= 3)//여기 파괴 안되는 적도 있다.
+        if (DragTiles.Count >= 3)//여기 파괴 안되는 적도 있다.
 		{
 			foreach (Tile tile in DragTiles)
 			{
                 if (tile.State == ST.eMatch)
                    tile.State = ST.eDestroy;
+                else {
+                    if(tile.gameObject.tag == "Enemy")
+                    {
+                        tile.GetComponent<Enemy>().SetDamage(sumPlayerDamage);
+                    }
+                }
 			}
 
             for (int x = 0; x < colums; x++)
@@ -228,6 +234,8 @@ public class BoardManager : MonoBehaviour {
 		// 하나씩 지우고 갱신
 		DragTiles.Clear();
         UpdateLine();
+
+        sumPlayerDamage = 0;
     }
 
 	//매치가능여부 판단
@@ -310,7 +318,7 @@ public class BoardManager : MonoBehaviour {
                 {
                     tile.State = ST.eMatch;
 
-                    if (obj.tag == "Sword")
+                    if ((obj.tag == "Sword") ||( obj.tag == "Enemy"))
                     {
                         for (int i = 0; i < DragTiles.Count; i++)
                         {

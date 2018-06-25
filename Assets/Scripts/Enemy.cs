@@ -47,4 +47,17 @@ public class Enemy : Tile {
             return false;
         }
     }
+    public void SetDamage( int Damage )
+    {
+        if (dp - Damage < 0)
+        {
+            dp = 0;
+            hp = (dp + hp) - Damage;
+        }
+        else
+            dp -= Damage;
+
+        tmDP.text = dp.ToString();
+        tmHP.text = hp.ToString();
+    }
 }

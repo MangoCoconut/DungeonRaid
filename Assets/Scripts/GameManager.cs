@@ -34,11 +34,12 @@ public class GameManager : MonoBehaviour {
 		//Sets this to not be destroyed when reloading scene
 		DontDestroyOnLoad(gameObject);
 
-		//Assign enemies to a new List of Enemy objects.
-		//enemies = new List<Enemy>();
+        //Assign enemies to a new List of Enemy objects.
+        //enemies = new List<Enemy>();
+        Screen.SetResolution(1000, 1600, false);
 
-		//Get a component reference to the attached BoardManager script
-		boardScript = GetComponent<BoardManager>();
+        //Get a component reference to the attached BoardManager script
+        boardScript = GetComponent<BoardManager>();
 		inputScript = GetComponent<InputManager>();
         player.Init();
         //Call the InitGame function to initialize the first level 
