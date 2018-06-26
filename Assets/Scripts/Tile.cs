@@ -62,4 +62,6 @@ public class Tile : MonoBehaviour {
         State = ST.eDown;
         TargetY = targetY;
     }
+
+    public virtual void Reset() { }
 }

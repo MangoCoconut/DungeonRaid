@@ -60,4 +60,9 @@ public class Enemy : Tile {
         tmDP.text = dp.ToString();
         tmHP.text = hp.ToString();
     }
+
+    public override void Reset()
+    {
+        deathMark.SetActive(false);
+    }
 }

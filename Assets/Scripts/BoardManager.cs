@@ -51,7 +51,7 @@ public class BoardManager : MonoBehaviour {
 	private Tile[,] tiles;
 
 	//매치용 변수들-----------------------------------------------------------
-	public List<Tile> DragTiles;//매치된 타일모음
+	public List<Tile> DragTiles = new List<Tile>();//매치된 타일모음
 	private Vector3 lastPos = Vector3.one * float.MaxValue;//매치중 마지막 위치
 	public float threshold = 0.001f;    //타일 사이의 매치여부 한계점, 최소값
 	public LineRenderer LR;//선 그리기
@@ -203,7 +203,7 @@ public class BoardManager : MonoBehaviour {
 	//매치결과 적용
 	public void DragOut()
 	{
-        if (DragTiles.Count >= 3)//여기 파괴 안되는 적도 있다.
+        if (DragTiles.Count >= 3)//매칭 성공
 		{
 			foreach (Tile tile in DragTiles)
 			{
@@ -230,6 +230,16 @@ public class BoardManager : MonoBehaviour {
             }
 
             GameManager.instance.SetDragOutCount();//일정 매칭마다 레벨상승
+        }
+        else//제대로된 매칭 안됨
+        {
+            for (int i = 0; i < DragTiles.Count; i++)
+            {
+                if (DragTiles[i].gameObject.tag == "Enemy")
+                {
+                    DragTiles[i].GetComponent<Enemy>().Reset();
+                }
+            }
         }
 		// 하나씩 지우고 갱신
 		DragTiles.Clear();
@@ -268,14 +278,43 @@ public class BoardManager : MonoBehaviour {
 			else if (obj.tag == "Coin")
 				eKind = Kind.eCoin;
 
-           
             DragTiles.Add(tile);
             return true;
 		}
 		//이미 1개 이상 있으면
 		if (DragTiles.Count >= 1)
 		{
-			if (eKind == Kind.eAttack)
+            //이쯤에서 되돌아가는거 체크하면 되려나
+            if (DragTiles.Count >= 2)
+            {
+                if( DragTiles[DragTiles.Count - 2].Equals(tile) )//2개 전 개체와 같다면
+                {
+                    if (DragTiles[DragTiles.Count - 1].gameObject.tag == "Enemy")//DragTiles 생성을 tile로 해서 그런지 오버라이딩 안됨
+                        DragTiles[DragTiles.Count - 1].GetComponent<Enemy>().Reset();
+
+                    string CancelTag = DragTiles[DragTiles.Count - 1].gameObject.tag;
+                    DragTiles.RemoveAt(DragTiles.Count - 1);
+
+                    if (CancelTag == "Sword")
+                    {
+                        sumPlayerDamage -= GameManager.instance.player.AP;
+                        for (int i = 0; i < DragTiles.Count; i++)
+                        {
+                            if (DragTiles[i].gameObject.tag == "Enemy")
+                            {
+                                if (DragTiles[i].GetComponent<Enemy>().IsDie(sumPlayerDamage))
+                                    DragTiles[i].State = ST.eMatch;
+                                else
+                                    DragTiles[i].State = ST.eNone;
+                            }
+                        }
+                    }
+                    return true;
+                    //칼이 없어지면 데메지도 줄여야 한다..
+                }
+            }
+
+            if (eKind == Kind.eAttack)
 			{
                 if (obj.tag == "Sword")
                 {
@@ -317,6 +356,7 @@ public class BoardManager : MonoBehaviour {
                 if (bPossible)
                 {
                     tile.State = ST.eMatch;
+                    DragTiles.Add(tile);
 
                     if ((obj.tag == "Sword") ||( obj.tag == "Enemy"))
                     {
@@ -331,15 +371,13 @@ public class BoardManager : MonoBehaviour {
                             }
                         }
                     }
-
-                    DragTiles.Add(tile);
                 }
                 //////////////////////////////////////////////////////////////////
             }
         }
 
 		return bPossible;
-	}
+    }
 
 	//선을 그리거나 없앰
 	private void UpdateLine()
@@ -366,17 +404,22 @@ public class BoardManager : MonoBehaviour {
 	//매치가능하면 선을 그리고 매치리스트에 추가
 	public void CheckMatch(Tile tile)
 	{
-		if (!DragTiles.Contains(tile))
-		{
+        //드래그 취소를 위한 변수
+        int BackIndex = DragTiles.Count - 2;
+        if (BackIndex < 0)
+            BackIndex = 0;
+
+        if (!DragTiles.Contains(tile) || DragTiles[BackIndex].Equals(tile))
+        {
 			Vector3 mouseWorld = tile.gameObject.transform.position;
 			float dist = Vector3.Distance(lastPos, mouseWorld);
 			if (dist <= threshold)
 				return;
 
-			if (!DragPossible(tile.gameObject.transform.gameObject))
+            if (!DragPossible(tile.gameObject.transform.gameObject))
                 return;
-				
-			lastPos = mouseWorld;
+
+            lastPos = mouseWorld;
 
 			UpdateLine();
 		}
