@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
@@ -9,7 +10,9 @@ public class GameManager : MonoBehaviour {
 	public InputManager inputScript;
     public Player player;
 
-	private int level = 1;
+    public Text LevelText;
+
+    private int level = 1;
     public int Level
     {
         get { return level; }
@@ -50,7 +53,8 @@ public class GameManager : MonoBehaviour {
 	{
 		//enemies.Clear();
 		boardScript.SetupScene(level);
-	}
+        LevelText.text = "Level: " + Level;
+    }
 	// Use this for initialization
 	void Start () {
 		
@@ -69,6 +73,7 @@ public class GameManager : MonoBehaviour {
         {
             level++;
             DragOutCount = 0;
+            LevelText.text = "Level: " + Level;
         }
     }
 }

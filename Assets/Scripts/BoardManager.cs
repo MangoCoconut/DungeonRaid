@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System;
+using UnityEngine.UI;
 
 public class BoardManager : MonoBehaviour {
 
@@ -56,6 +57,8 @@ public class BoardManager : MonoBehaviour {
 	public float threshold = 0.001f;    //타일 사이의 매치여부 한계점, 최소값
 	public LineRenderer LR;//선 그리기
     //----------------------------------------------------------------------
+
+    public Text Damage;
 
     int sumPlayerDamage = 0;
 
@@ -116,7 +119,10 @@ public class BoardManager : MonoBehaviour {
 
 		for (int i = 0; i < objectCount; i++)
 		{
-			Vector3 randomPosition = RandomPosition();
+            if (gridPositions.Count == 0)
+                return;
+
+            Vector3 randomPosition = RandomPosition();
 			GameObject newTile =  Instantiate(tile, randomPosition, Quaternion.identity) as GameObject;
 			int x = (int)randomPosition.x;
 			int y = (int)randomPosition.y;
@@ -185,8 +191,8 @@ public class BoardManager : MonoBehaviour {
 
 	public void SetupScene( int level )
 	{
-		//BoardSetup();
-		InitialiseList();//랜덤포지션용 1회용 변후 초기화
+        //BoardSetup();
+        InitialiseList();//랜덤포지션용 1회용 변후 초기화
 
 		//int enemyCount = (int)Mathf.Log(level, 2f);
 		int enemyCountMin = 1;
@@ -198,11 +204,13 @@ public class BoardManager : MonoBehaviour {
 		LayoutObjectAtRandom(Potion, PotionCount.Minimum, PotionCount.maximum);
 		LayoutObjectAtRandom(Coin, CoinCount.Minimum, CoinCount.maximum);
 		LayoutObjectAtRandom(Coin, 36, 36);
-	}
+    }
 
 	//매치결과 적용
 	public void DragOut()
 	{
+        Damage.text = "";
+
         if (DragTiles.Count >= 3)//매칭 성공
 		{
 			foreach (Tile tile in DragTiles)
@@ -257,7 +265,7 @@ public class BoardManager : MonoBehaviour {
 
         if (DragTiles.Count == 0)
 		{
-            sumPlayerDamage = 0;
+            sumPlayerDamage = GameManager.instance.player.AP;
 
             tile.State = ST.eMatch;
 
@@ -270,6 +278,7 @@ public class BoardManager : MonoBehaviour {
             {
                 eKind = Kind.eAttack;
                 tile.State = ST.eNone;//안죽을 수도 있다.
+                tile.GetComponent<Enemy>().IsDie(sumPlayerDamage);
             }
             else if (obj.tag == "Shield")
 				eKind = Kind.eShield;
@@ -418,6 +427,14 @@ public class BoardManager : MonoBehaviour {
 
             if (!DragPossible(tile.gameObject.transform.gameObject))
                 return;
+
+            //데미지 표시
+            if(eKind == Kind.eAttack)
+            {
+                Vector2 location = Camera.main.WorldToScreenPoint(new Vector3(mouseWorld.x, mouseWorld.y + 0.5f, mouseWorld.z));
+                Damage.transform.position = location;
+                Damage.text = sumPlayerDamage + " DMG";
+            }
 
             lastPos = mouseWorld;
 

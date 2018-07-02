@@ -31,7 +31,7 @@ public class Enemy : Tile {
     {
         ap = Random.Range(level, level * 2 - 1);
         dp = Random.Range(0, level * 2 - 2);
-        hp = Random.Range(level, level * 3 - 1);
+        hp = Random.Range(level * 2, level * 3 - 1);
     }
 
     public bool IsDie( int playerAP)

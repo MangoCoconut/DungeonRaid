@@ -99,10 +99,10 @@ MonoBehaviour:
   Shield: {fileID: 1570243573677474, guid: 3b5c9b6ff7c4817409cb04c846fac00e, type: 2}
   Potion: {fileID: 1742995072095628, guid: 770cd088b6aa5f3479b885cc7cb44227, type: 2}
   Coin: {fileID: 1584193220967880, guid: fd67b07a820e3734892109d7ce272fdb, type: 2}
-  deathMark: {fileID: 1438254847885090, guid: 7185373b3ba2f2b459f91d5e54b54923, type: 2}
   DragTiles: []
   threshold: 0.001
   LR: {fileID: 0}
+  Damage: {fileID: 0}
 --- !u!120 &120751245592170334
 LineRenderer:
   m_ObjectHideFlags: 1
