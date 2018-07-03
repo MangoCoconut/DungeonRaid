@@ -463,7 +463,7 @@ Prefab:
     - target: {fileID: 114855481115095186, guid: 2605518467766e645885e022565bce82,
         type: 2}
       propertyPath: m_Text
-      value: DMG
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 114855481115095186, guid: 2605518467766e645885e022565bce82,
         type: 2}
@@ -637,7 +637,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: DMG
+  m_Text: 
 --- !u!222 &1611930355
 CanvasRenderer:
   m_ObjectHideFlags: 0
