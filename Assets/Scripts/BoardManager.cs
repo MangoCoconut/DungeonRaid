@@ -209,6 +209,8 @@ public class BoardManager : MonoBehaviour {
 	//매치결과 적용
 	public void DragOut()
 	{
+        SetShadowOff();
+
         Damage.text = "";
 
         if (DragTiles.Count >= 3)//매칭 성공
@@ -436,9 +438,60 @@ public class BoardManager : MonoBehaviour {
                 Damage.text = sumPlayerDamage + " DMG";
             }
 
+            SetShadowOn();//현재 매칭 중인 타일종류 제외하고 어둡게 처리
+
             lastPos = mouseWorld;
 
 			UpdateLine();
 		}
 	}
+
+    //현재 매칭 중인 타일종류 제외하고 어둡게 처리
+    public void SetShadowOn()
+    {
+        Color c = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+
+        for (int x = 0; x < colums; x++)
+        {
+            for (int y = 0; y < rows; y++)
+            {
+                switch( eKind)
+                {
+                    case Kind.eAttack:
+                        {
+                            if (!(tiles[x, y].gameObject.tag == "Enemy" || tiles[x, y].gameObject.tag == "Sword"))
+                                tiles[x, y].GetComponentInChildren<SpriteRenderer>().color = c; 
+                        }
+                        break;
+                    case Kind.eShield:
+                        {
+                            if (tiles[x, y].gameObject.tag != "Shield")
+                                tiles[x, y].GetComponentInChildren<SpriteRenderer>().color = c;
+                        }
+                        break;
+                    case Kind.ePotion:
+                        {
+                            if (tiles[x, y].gameObject.tag != "Potion")
+                                tiles[x, y].GetComponentInChildren<SpriteRenderer>().color = c;
+                        }
+                        break;
+                    case Kind.eCoin:
+                        {
+                            if (tiles[x, y].gameObject.tag != "Coin")
+                                tiles[x, y].GetComponentInChildren<SpriteRenderer>().color = c;
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+    public void SetShadowOff()
+    {
+        Color c = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+        for (int x = 0; x < colums; x++)
+            for (int y = 0; y < rows; y++)
+                tiles[x, y].GetComponentInChildren<SpriteRenderer>().color = c;
+    }
 }

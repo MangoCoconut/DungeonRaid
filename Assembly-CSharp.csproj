@@ -60,6 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\BoardManager.cs" />
+    <Compile Include="Assets\Scripts\default\FadeIn.cs" />
+    <Compile Include="Assets\Scripts\default\FadeOut.cs" />
     <Compile Include="Assets\Scripts\default\Loader.cs" />
     <Compile Include="Assets\Scripts\default\TapToStart.cs" />
     <Compile Include="Assets\Scripts\Enemy.cs" />
@@ -298,12 +300,6 @@
     <Reference Include="Boo.Lang">
       <HintPath>D:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/unity/Boo.Lang.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{6A64E67F-D5C3-11F6-9C14-37D9B9CEDB1A}</Project>
-      <Name>Assembly-CSharp-firstpass</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
