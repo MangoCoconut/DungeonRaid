@@ -10,10 +10,12 @@ public class FadeIn : MonoBehaviour {
     Color currentColor;
 
     float duration = 0.1f;
+    bool waitend = false;
 
 	void Start () {
         currentColor = startColor;
         //Destroy(gameObject, duration + 1);
+        StartCoroutine(Wait());
     }
 
     private void OnGUI()
@@ -23,14 +25,23 @@ public class FadeIn : MonoBehaviour {
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), fadeTexture);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        currentColor = Color.Lerp(startColor, endColor, duration);
-        duration += 0.05f;
-
-        if (currentColor == endColor)
+        if(waitend)
         {
-            Destroy(gameObject);
+            currentColor = Color.Lerp(startColor, endColor, duration);
+            duration += 0.05f;
+
+            if (currentColor == endColor)
+            {
+                Destroy(gameObject);
+            }
         }
+    }
+
+    IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(0.5f);
+        waitend = true;
     }
 }

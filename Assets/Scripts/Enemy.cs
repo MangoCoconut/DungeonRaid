@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Enemy : Tile {
 
@@ -8,9 +9,9 @@ public class Enemy : Tile {
     int dp;//Defensive Power
     int hp;//Health Power
 
-    public TextMesh tmAP;
-    public TextMesh tmDP;
-    public TextMesh tmHP;
+    public TextMeshProUGUI tmAP;
+    public TextMeshProUGUI tmDP;
+    public TextMeshProUGUI tmHP;
 
     public GameObject deathMark;
 

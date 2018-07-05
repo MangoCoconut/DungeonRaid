@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour {
 
@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour {
 	public InputManager inputScript;
     public Player player;
 
-    public Text LevelText;
+    public TextMeshProUGUI LevelText;
 
     private int level = 1;
     public int Level

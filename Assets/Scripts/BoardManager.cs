@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System;
-using UnityEngine.UI;
+//using UnityEngine.UI;
+using TMPro;
 
 public class BoardManager : MonoBehaviour {
 
@@ -58,15 +59,27 @@ public class BoardManager : MonoBehaviour {
 	public LineRenderer LR;//선 그리기
     //----------------------------------------------------------------------
 
-    public Text Damage;
+    public TextMeshProUGUI Damage;
 
     int sumPlayerDamage = 0;
+
+    enum DragSound
+    {
+        eEnemy,
+        eSword,
+        eShield,
+        ePotion,
+        eCoin,
+    }
+    private AudioSource source = null;
+    public AudioClip[] Clip;
 
     // Use this for initialization
     void Start()
 	{
         eKind = Kind.eNone;
 		LR = GetComponent<LineRenderer>();
+        source = GetComponent<AudioSource>();
 	}
 
 	// Update is called once per frame
@@ -233,6 +246,7 @@ public class BoardManager : MonoBehaviour {
                 {
                     if (tiles[x, y].State == ST.eDestroy)
                     {
+                        SetDragSound(tiles[x, y].gameObject.tag);//드래그 사운드 말고 전용 사운드 넣어야 하는데..
                         ShiftTilesDown(x, y);
                         break;
                     }
@@ -438,6 +452,8 @@ public class BoardManager : MonoBehaviour {
                 Damage.text = sumPlayerDamage + " DMG";
             }
 
+            SetDragSound(tile.gameObject.tag);
+
             SetShadowOn();//현재 매칭 중인 타일종류 제외하고 어둡게 처리
 
             lastPos = mouseWorld;
@@ -493,5 +509,35 @@ public class BoardManager : MonoBehaviour {
         for (int x = 0; x < colums; x++)
             for (int y = 0; y < rows; y++)
                 tiles[x, y].GetComponentInChildren<SpriteRenderer>().color = c;
+    }
+
+
+    void SetDragSound(string tag)
+    {
+        int index = getDragCound(tag);
+        source.PlayOneShot(Clip[index]);
+    }
+    public int getDragCound( string tag )
+    {
+        int id = 0;
+        switch(tag)
+        {
+            case "Enemy":
+                id =  (int)DragSound.eEnemy;
+                break;
+            case "Sword":
+                id = (int)DragSound.eSword;
+                break;
+            case "Shield":
+                id = (int)DragSound.eShield;
+                break;
+            case "Potion":
+                id = (int)DragSound.ePotion;
+                break;
+            case "Coin":
+                id = (int)DragSound.eCoin;
+                break;
+        }
+        return id;
     }
 }

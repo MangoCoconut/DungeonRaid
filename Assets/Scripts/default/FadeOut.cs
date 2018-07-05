@@ -25,17 +25,6 @@ public class FadeOut : MonoBehaviour {
         {
             Tap = true;
         }
-
-        if (Tap)
-        {
-            currentColor = Color.Lerp(startColor, endColor, duration);
-            duration += 0.05f;
-
-            if (currentColor == endColor)
-            {
-                SceneManager.LoadScene("Main");
-            }
-        }
     }
 
     private void OnGUI()
@@ -45,6 +34,20 @@ public class FadeOut : MonoBehaviour {
             GUI.depth = -10; //숫자가 낮을수록 나중에 출력되므로 가장 앞에 출력된다
             GUI.color = currentColor; // 아래의 텍스쳐가 그려질 때 투명도를 조정한다
             GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), fadeTexture);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (Tap)
+        {
+            currentColor = Color.Lerp(startColor, endColor, duration);
+            duration += 0.05f;
+
+            if (currentColor == endColor)
+            {
+                SceneManager.LoadScene("Main");
+            }
         }
     }
 }
