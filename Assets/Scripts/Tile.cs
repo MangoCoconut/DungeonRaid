@@ -21,11 +21,13 @@ public class Tile : MonoBehaviour {
     }
 
 	int TargetY;
+    float t;
 
     public Tile()
     {
         State = ST.eNone;
         TargetY = 0;
+        t = 0.0f;
     }
     // Use this for initialization
     void Start () {
@@ -37,30 +39,60 @@ public class Tile : MonoBehaviour {
             State = ST.eNone;
             gameObject.GetComponent<Rigidbody2D>().gravityScale = 5.0f;
         }
-        else if (State == ST.eDown)
-        {
-            StartCoroutine("MoveDown");
-        }
 
         if (gameObject.transform.position.y < -4.0f)
             Destroy(gameObject);
+
+        if(State == ST.eDown)
+        {
+            if (gameObject.transform.position.y <= TargetY)
+            {
+                State = ST.eNone;
+            }
+
+            if (gameObject.transform.position.y > TargetY)
+            {
+                gameObject.transform.position = new Vector3(gameObject.transform.position.x,
+                          Mathf.Lerp(gameObject.transform.position.y, TargetY, t), gameObject.transform.position.z);
+
+                t += Time.deltaTime;
+
+                // yield return null;
+                /*
+                gameObject.transform.position += new Vector3(0, -0.1f, 0);
+
+                yield return new WaitForSeconds(0.000001f);*/
+            }
+        }
+
     }
 
     IEnumerator MoveDown()
     {
+        if (gameObject.transform.position.y <= TargetY)
+        {
+            State = ST.eNone;
+        }
+
         while (gameObject.transform.position.y > TargetY)
         {
             gameObject.transform.position = new Vector3(gameObject.transform.position.x,
-                Mathf.Lerp(gameObject.transform.position.y, TargetY, Time.time * 0.01f), gameObject.transform.position.z);
+                      Mathf.Lerp(gameObject.transform.position.y, TargetY, Time.time * 0.01f), gameObject.transform.position.z);
 
             yield return null;
+            /*
+            gameObject.transform.position += new Vector3(0, -0.1f, 0);
+
+            yield return new WaitForSeconds(0.000001f);*/
         }
-        State = ST.eNone;
+        
     }
     public void SetMoveDown( int targetY )
     {
         State = ST.eDown;
         TargetY = targetY;
+        t = 0.0f;
+        //StartCoroutine("MoveDown");
     }
 
     public virtual void Reset() { }

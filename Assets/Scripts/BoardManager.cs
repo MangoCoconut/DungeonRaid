@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System;
-//using UnityEngine.UI;
+using UnityEngine.UI;
 using TMPro;
 
 public class BoardManager : MonoBehaviour {
@@ -30,9 +30,20 @@ public class BoardManager : MonoBehaviour {
 		eCoin
 	};
 
-	private Kind eKind;
+    enum State
+    {
+        eMy,
+        eMatchEnd,
+        eEnemy,
+        eShieldMax,
+        eCoinMax,
+        eExpMax,
+    }
 
-	public int colums = 6;
+	private Kind eKind;
+    private State eState;
+
+    public int colums = 6;
 	public int rows = 6;
 	public int TileType = 5;
 
@@ -74,17 +85,30 @@ public class BoardManager : MonoBehaviour {
     private AudioSource source = null;
     public AudioClip[] Clip;
 
+    public GameObject TileBackGround;
+    public GameObject EnemyAttack;
+
     // Use this for initialization
     void Start()
 	{
         eKind = Kind.eNone;
 		LR = GetComponent<LineRenderer>();
         source = GetComponent<AudioSource>();
-	}
+        eState = State.eMy;
+
+    }
 
 	// Update is called once per frame
 	void Update()
 	{
+        if(eState == State.eMatchEnd)
+        {
+            if(GetDownDone())
+            {
+                eState = State.eEnemy;
+                SetEnemyTurn();
+            }
+        }
 	}
 
 	void InitialiseList()
@@ -222,6 +246,9 @@ public class BoardManager : MonoBehaviour {
 	//매치결과 적용
 	public void DragOut()
 	{
+        if (eState != State.eMy)
+            return;
+
         SetShadowOff();
 
         Damage.text = "";
@@ -254,6 +281,8 @@ public class BoardManager : MonoBehaviour {
             }
 
             GameManager.instance.SetDragOutCount();//일정 매칭마다 레벨상승
+
+            eState = State.eMatchEnd;
         }
         else//제대로된 매칭 안됨
         {
@@ -264,6 +293,8 @@ public class BoardManager : MonoBehaviour {
                     DragTiles[i].GetComponent<Enemy>().Reset();
                 }
             }
+
+            eState = State.eMy;
         }
 		// 하나씩 지우고 갱신
 		DragTiles.Clear();
@@ -429,6 +460,9 @@ public class BoardManager : MonoBehaviour {
 	//매치가능하면 선을 그리고 매치리스트에 추가
 	public void CheckMatch(Tile tile)
 	{
+        if (eState != State.eMy)
+            return;
+
         //드래그 취소를 위한 변수
         int BackIndex = DragTiles.Count - 2;
         if (BackIndex < 0)
@@ -539,5 +573,51 @@ public class BoardManager : MonoBehaviour {
                 break;
         }
         return id;
+    }
+
+    void SetEnemyTurn()//적이 공격할 차례
+    {
+        //타일지역 어둡게
+        TileBackGround.gameObject.GetComponent<TileBackFade>().SetFadeOut();
+
+        //적 공격이펙트 및 사운드
+        SetEnemyAttackEffect();
+        //적 데미지 표시
+
+        //타일지역 밝게
+        //TileBackGround.gameObject.GetComponent<TileBackFade>().SetFadeIn();
+
+        eState = State.eMy;
+    }
+
+    void SetEnemyAttackEffect()
+    {
+        for (int x = 0; x < colums; x++)
+        {
+            for (int y = 0; y < rows; y++)
+            {
+                if( tiles[x, y].gameObject.tag == "Enemy")
+                {
+                    GameObject Obj = Instantiate(EnemyAttack, tiles[x, y].gameObject.transform.position, Quaternion.identity) as GameObject;
+                }
+            }
+        }
+        int index = getDragCound("Enemy");
+        source.PlayOneShot(Clip[index]);
+    }
+
+    bool GetDownDone()//모든 타일이 다운처리가 끝났는지 확인
+    {
+        for (int x = 0; x < colums; x++)
+        {
+            for (int y = 0; y < rows; y++)
+            {
+                if (tiles[x, y].State != ST.eNone)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
