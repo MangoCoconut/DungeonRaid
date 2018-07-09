@@ -145,6 +145,7 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 45f3431f0103c41611e8d4eec3d439df UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.SpatialMappingRenderer
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.InputManager
 50a0fa002cfc67638c87a901e46b763e Assembly-CSharp.dll:TMPro.Examples.TMP_TextSelector_B
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.EnemyAttack
 020550babdb991365f61c5bffe1f4f52 Assembly-CSharp.dll:TMPro.Examples.Benchmark03
 b9332c0eee630779376843b5343eb250 Assembly-CSharp.dll:TMPro.Examples.TMP_TextInfoDebugTool
 f4bd1aee67eeef7953cce6c44588b3d7 TextMeshPro-2017.3-Runtime.dll:TMPro.TextContainer
@@ -203,7 +204,8 @@ e9bdabf9265d758d56f01bb188916fa8 UnityEngine.Networking.dll:UnityEngine.Networki
 3f32f08a64daf40b09ed864d96fe3840 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransform
 73843688b51256aed059f049c540bca8 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformChild
 528ea1fd7c01796fc60c4e2f172ea229 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformVisualizer
-15a789d65a57b8718b3ee43fa7530ea6 Assembly-CSharp.dll:.BoardManager
+4674acafb8dbe3124a44a1800f936886 Assembly-CSharp.dll:.BoardManager
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.TileBackFade
 62229a3e4d53ca59bec192e89627ed52 Assembly-CSharp.dll:TMPro.Examples.CameraController
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.TestRunner.dll:UnityEngine.TestTools.TestRunner.Callbacks.PlayModeRunnerCallback
 f02726adeff0a3ec5905565234b372da UnityEngine.TestRunner.dll:UnityEngine.TestTools.TestRunner.PlaymodeTestsController
@@ -239,17 +241,3 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 a69b3ee0402770d02d1c122324e4b00e Assembly-CSharp.dll:TMPro.Examples.SkewTextExample
 34e025057ef78b1bf238460cdf6583a3 Assembly-CSharp.dll:TMPro.Examples.ObjectSpin
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:TMPro.Examples.SimpleScript
-769e6e9cd18ffaa8e14d97b5a7eb5f7d Assembly-CSharp.dll:.ProgressBar
-90c4de27d5ae41be6b6d3d562de24ae6 Assembly-CSharp.dll:.DemoPanelAnim
-eeb5042869581ca73b2938ee41c9ccee Assembly-CSharp.dll:.RatingSystem
-970fe4b2633205f07b53fbb15d37c5ea Assembly-CSharp.dll:.DemoManager
-4162154c5be861f7ad57c5e97bb784a3 Assembly-CSharp.dll:.SwitchAnim
-0ff15417b64d8b5ee955a13f6693eead Assembly-CSharp.dll:.NotificationExample
-d140669f5ac9b9483b739e230114c862 Assembly-CSharp.dll:.LaunchURL
-92201e4e2609b1f642957438d012d62b Assembly-CSharp.dll:.PBFilled
-8ece37e7dead9396f9e7a77a9c84091a Assembly-CSharp.dll:.RadialSlider
-76f60a66e37b0bef83bc187c89dcce26 Assembly-CSharp.dll:.DropdownItem
-c07371cd776f4d6a5a7cbfb59e0a6760 Assembly-CSharp.dll:.CustomInputField
-114a9f796f80595f1d1e14c7cf00cbcb Assembly-CSharp.dll:.CustomDropdown
-db5b248ef8b491a6b6c641eb213898c7 Assembly-CSharp.dll:.ToggleAnim
-7d3040262bee6c8b3a2b33628640f256 Assembly-CSharp.dll:.DemoHamburgerMenu

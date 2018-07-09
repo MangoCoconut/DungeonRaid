@@ -4,30 +4,23 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
-    int ap;//Attack Power
-    int dp;//Defensive Power
-    int hp;//Health Power
-           // Use this for initialization
+    public int bp = 1;//Base Attack Power
+    public int wp = 1;//Weapon Attack Power
+    public int dp = 0;//Defensive Power
+    public int mdp = 0;//Max Defensive Power
+    public int hp = 10;//Current Health Power
+    public int mhp = 10;//Max Health Power
 
-    public int AP
-    {
-        get { return ap; }
-    }
-
-    public int DP
-    {
-        get { return dp; }
-    }
-
-    public int HP
-    {
-        get { return hp; }
-    }
+    public int dg = 0;
+    public int cg = 0;
+    public int exp = 0;
+    public int mexp = 10;
 
     public void Init () {
-        ap = 1;
-        dp = 0;
-        hp = 10;
+        //bp = 1;
+        //wp = 1;
+       // dp = 0;
+       // hp = 10;
     }
 	
 	// Update is called once per frame

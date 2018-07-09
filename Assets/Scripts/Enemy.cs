@@ -5,9 +5,9 @@ using TMPro;
 
 public class Enemy : Tile {
 
-    int ap;//Attack Power
-    int dp;//Defensive Power
-    int hp;//Health Power
+    public int ap;//Attack Power
+    public int dp;//Defensive Power
+    public int hp;//Health Power
 
     public TextMeshProUGUI tmAP;
     public TextMeshProUGUI tmDP;

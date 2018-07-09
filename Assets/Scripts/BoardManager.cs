@@ -5,6 +5,7 @@ using Random = UnityEngine.Random;
 using System;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class BoardManager : MonoBehaviour {
 
@@ -21,14 +22,15 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 
-	enum Kind
-	{
-		eNone,
-		eAttack,
-		eShield,
-		ePotion,
-		eCoin
-	};
+    #region enum 
+    enum Kind
+    {
+        eNone,
+        eAttack,
+        eShield,
+        ePotion,
+        eCoin
+    };
 
     enum State
     {
@@ -39,8 +41,17 @@ public class BoardManager : MonoBehaviour {
         eCoinMax,
         eExpMax,
     }
-
-	private Kind eKind;
+    enum DragSound
+    {
+        eEnemy,
+        eSword,
+        eShield,
+        ePotion,
+        eCoin,
+    }
+    #endregion
+    #region field
+    private Kind eKind;
     private State eState;
 
     public int colums = 6;
@@ -74,20 +85,27 @@ public class BoardManager : MonoBehaviour {
 
     int sumPlayerDamage = 0;
 
-    enum DragSound
-    {
-        eEnemy,
-        eSword,
-        eShield,
-        ePotion,
-        eCoin,
-    }
+
     private AudioSource source = null;
     public AudioClip[] Clip;
 
     public GameObject TileBackGround;
     public GameObject EnemyAttack;
+    public GameObject EnemyDamage;
 
+    public Image imgPlayerHp;
+    public TextMeshProUGUI txtPlayerHp;
+    public TextMeshProUGUI txtPlayerBp;
+    public TextMeshProUGUI txtPlayerWp;
+    public TextMeshProUGUI txtPlayerDp;
+    public Image imgShieldGage;
+    public TextMeshProUGUI txtShieldGage;
+    public Image imgCoinGage;
+    public TextMeshProUGUI txtCoinGage;
+    public Image imgExpGage;
+    public TextMeshProUGUI txtExpGage;
+    #endregion
+    #region Default Method
     // Use this for initialization
     void Start()
 	{
@@ -110,8 +128,9 @@ public class BoardManager : MonoBehaviour {
             }
         }
 	}
+    #endregion
 
-	void InitialiseList()
+    void InitialiseList()
 	{
         gridPositions.Clear();
 
@@ -123,23 +142,6 @@ public class BoardManager : MonoBehaviour {
 			}
 		}
 		tiles = new Tile[colums, rows];
-	}
-
-	void BoardSetup()
-	{/*
-		boardHolder = new GameObject("Board").transform;
-
-		for (int x = 0; x < colums; x++)
-		{
-			for (int y = 0; y < rows; y++)
-			{
-				//밑에 이거 if else로 하는게 더 낫지 않나?
-				GameObject toInstantiate = tiles[Random.Range(0, TileType)];
-				GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
-				//왜 부모로?
-				instance.transform.SetParent(boardHolder);
-			}
-		}*/
 	}
 
 	Vector3 RandomPosition()
@@ -228,7 +230,6 @@ public class BoardManager : MonoBehaviour {
 
 	public void SetupScene( int level )
 	{
-        //BoardSetup();
         InitialiseList();//랜덤포지션용 1회용 변후 초기화
 
 		//int enemyCount = (int)Mathf.Log(level, 2f);
@@ -241,6 +242,8 @@ public class BoardManager : MonoBehaviour {
 		LayoutObjectAtRandom(Potion, PotionCount.Minimum, PotionCount.maximum);
 		LayoutObjectAtRandom(Coin, CoinCount.Minimum, CoinCount.maximum);
 		LayoutObjectAtRandom(Coin, 36, 36);
+
+        InitPlayerState();
     }
 
 	//매치결과 적용
@@ -292,6 +295,7 @@ public class BoardManager : MonoBehaviour {
                 {
                     DragTiles[i].GetComponent<Enemy>().Reset();
                 }
+                DragTiles[i].State = ST.eNone;
             }
 
             eState = State.eMy;
@@ -312,14 +316,14 @@ public class BoardManager : MonoBehaviour {
 
         if (DragTiles.Count == 0)
 		{
-            sumPlayerDamage = GameManager.instance.player.AP;
+            sumPlayerDamage = GameManager.instance.player.bp;
 
             tile.State = ST.eMatch;
 
             if (obj.tag == "Sword")
             {
                 eKind = Kind.eAttack;
-                sumPlayerDamage += GameManager.instance.player.AP;
+                sumPlayerDamage += GameManager.instance.player.wp;
             }
             else if (obj.tag == "Enemy")
             {
@@ -348,12 +352,14 @@ public class BoardManager : MonoBehaviour {
                     if (DragTiles[DragTiles.Count - 1].gameObject.tag == "Enemy")//DragTiles 생성을 tile로 해서 그런지 오버라이딩 안됨
                         DragTiles[DragTiles.Count - 1].GetComponent<Enemy>().Reset();
 
+                    DragTiles[DragTiles.Count - 1].State = ST.eNone;
+
                     string CancelTag = DragTiles[DragTiles.Count - 1].gameObject.tag;
                     DragTiles.RemoveAt(DragTiles.Count - 1);
 
                     if (CancelTag == "Sword")
                     {
-                        sumPlayerDamage -= GameManager.instance.player.AP;
+                        sumPlayerDamage -= GameManager.instance.player.wp;
                         for (int i = 0; i < DragTiles.Count; i++)
                         {
                             if (DragTiles[i].gameObject.tag == "Enemy")
@@ -374,7 +380,7 @@ public class BoardManager : MonoBehaviour {
 			{
                 if (obj.tag == "Sword")
                 {
-                    sumPlayerDamage += GameManager.instance.player.AP;
+                    sumPlayerDamage += GameManager.instance.player.wp;
                     bPossible = true;
                 }
                 else if (obj.tag == "Enemy")
@@ -581,7 +587,7 @@ public class BoardManager : MonoBehaviour {
         TileBackGround.gameObject.GetComponent<TileBackFade>().SetFadeOut();
 
         //적 공격이펙트 및 사운드
-        SetEnemyAttackEffect();
+        SetEnemyAttack();
         //적 데미지 표시
 
         //타일지역 밝게
@@ -590,8 +596,9 @@ public class BoardManager : MonoBehaviour {
         eState = State.eMy;
     }
 
-    void SetEnemyAttackEffect()
+    void SetEnemyAttack()
     {
+        int Damage = 0;
         for (int x = 0; x < colums; x++)
         {
             for (int y = 0; y < rows; y++)
@@ -599,11 +606,20 @@ public class BoardManager : MonoBehaviour {
                 if( tiles[x, y].gameObject.tag == "Enemy")
                 {
                     GameObject Obj = Instantiate(EnemyAttack, tiles[x, y].gameObject.transform.position, Quaternion.identity) as GameObject;
+                    Damage += tiles[x, y].GetComponent<Enemy>().ap;
                 }
             }
         }
-        int index = getDragCound("Enemy");
-        source.PlayOneShot(Clip[index]);
+
+        if(Damage > 0)
+        {
+            int index = getDragCound("Enemy");
+            source.PlayOneShot(Clip[index]);
+
+            EnemyDamage.gameObject.GetComponent<DamageFadeInOut>().SetFadeOut(Damage);
+
+            SetPlayerHp(Damage);
+        }
     }
 
     bool GetDownDone()//모든 타일이 다운처리가 끝났는지 확인
@@ -619,5 +635,42 @@ public class BoardManager : MonoBehaviour {
             }
         }
         return true;
+    }
+
+    void InitPlayerState()
+    {
+        int hp = GameManager.instance.player.hp;
+        int maxhp = GameManager.instance.player.mhp;
+        txtPlayerHp.SetText(hp.ToString() + "/" + maxhp.ToString());
+        imgPlayerHp.fillAmount = (float)hp / (float)maxhp;
+
+        txtPlayerBp.SetText("+" + GameManager.instance.player.bp.ToString());
+        txtPlayerDp.SetText(GameManager.instance.player.dp.ToString() + "/" + GameManager.instance.player.mdp.ToString());
+        txtPlayerWp.SetText("+" + GameManager.instance.player.wp.ToString());
+
+        imgShieldGage.fillAmount = (float)GameManager.instance.player.dg / (float)100;
+        txtShieldGage.SetText(((GameManager.instance.player.dg / 100) * 100).ToString() + "%");
+        imgCoinGage.fillAmount = (float)GameManager.instance.player.cg / (float)100;
+        txtCoinGage.SetText(((GameManager.instance.player.dg / 100) * 100).ToString() + "%");
+        imgExpGage.fillAmount = (float)GameManager.instance.player.exp / (float)GameManager.instance.player.mexp;
+        txtExpGage.SetText(((GameManager.instance.player.dg / GameManager.instance.player.mexp) * 100).ToString() + "%");
+    }   
+
+    void SetPlayerHp( int Damage )
+    {
+        if (GameManager.instance.player.dp - Damage < 0)
+        {
+            GameManager.instance.player.dp = 0;
+            GameManager.instance.player.hp = (GameManager.instance.player.dp + GameManager.instance.player.hp) - Damage;
+        }
+        else
+            GameManager.instance.player.dp -= Damage;
+
+        InitPlayerState();
+        /*
+        if(GameManager.instance.player.hp <= 0)
+        {
+            SceneManager.LoadScene("GameOver");
+        }*/
     }
 }

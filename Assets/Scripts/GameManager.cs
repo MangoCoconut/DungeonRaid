@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour {
 			Destroy(gameObject);
 
 		//Sets this to not be destroyed when reloading scene
-		DontDestroyOnLoad(gameObject);
+		//DontDestroyOnLoad(gameObject);//이거 유지안해야 게임리셋되서 다시 할 수 있다
 
         //Assign enemies to a new List of Enemy objects.
         //enemies = new List<Enemy>();

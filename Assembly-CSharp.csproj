@@ -93,6 +93,7 @@
     <Compile Include="Assets\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
     <Compile Include="Assets\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
     <Compile Include="Assets\Scripts\BoardManager.cs" />
+    <Compile Include="Assets\Scripts\DamageFadeInOut.cs" />
     <Compile Include="Assets\Scripts\default\FadeIn.cs" />
     <Compile Include="Assets\Scripts\default\FadeOut.cs" />
     <Compile Include="Assets\Scripts\default\Loader.cs" />
