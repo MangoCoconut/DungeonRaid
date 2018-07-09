@@ -4,10 +4,12 @@ C:/Users/yunhiwan/Desktop/PuzzleDungeon.apk
 SceneListBegin?
 Assets/Scenes/Title.unity
 Assets/Scenes/Main.unity
+Assets/Scenes/GameOver.unity
 SceneListEnd?
-05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Player
+74206217469ce07a91aa7a29d2f9d214 Assembly-CSharp.dll:.Player
 75cd0c6c744b9733ef29aa6c59ece2b1 Assembly-CSharp.dll:TMPro.Examples.VertexZoom
 c906602d9b43cc5e075f80e1d8ae7c79 Assembly-CSharp.dll:TMPro.Examples.Benchmark01_UGUI
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.DamageFadeInOut
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
 cf455f7a806648c6ed4c7d3e3f8a0e03 UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationTrack
 13bdb7c23815c33a33b37b0ba8dd39be UnityEngine.Timeline.dll:UnityEngine.Timeline.AnimationPlayableAsset
@@ -118,7 +120,7 @@ e9bdabf9265d758d56f01bb188916fa8 UnityEngine.Networking.dll:UnityEngine.Networki
 9de3a22eca9aefadba2d10d5987cefe3 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:TMPro.TMP_PhoneNumberValidator
 3cec46facae45921257202a20c50db64 Assembly-CSharp.dll:TMPro.Examples.WarpTextExample
-1eca0c0bc737c304657db60b3ea21fc0 Assembly-CSharp.dll:.Enemy
+ca073481d605ea3a4107f174384a5164 Assembly-CSharp.dll:.Enemy
 f4bd1aee67eeef7953cce6c44588b3d7 TextMeshPro-2017.3-Runtime.dll:TMPro.TextContainer
 bf22e89fa4b77e86d45d7ae313079474 TextMeshPro-2017.3-Runtime.dll:TMPro.TextMeshPro
 bcada89394089914d10ff70647b120da TextMeshPro-2017.3-Runtime.dll:TMPro.TextMeshProUGUI
@@ -204,7 +206,7 @@ e9bdabf9265d758d56f01bb188916fa8 UnityEngine.Networking.dll:UnityEngine.Networki
 3f32f08a64daf40b09ed864d96fe3840 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransform
 73843688b51256aed059f049c540bca8 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformChild
 528ea1fd7c01796fc60c4e2f172ea229 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformVisualizer
-4674acafb8dbe3124a44a1800f936886 Assembly-CSharp.dll:.BoardManager
+fdc2c0235e269791af85d12945291680 Assembly-CSharp.dll:.BoardManager
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.TileBackFade
 62229a3e4d53ca59bec192e89627ed52 Assembly-CSharp.dll:TMPro.Examples.CameraController
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.TestRunner.dll:UnityEngine.TestTools.TestRunner.Callbacks.PlayModeRunnerCallback

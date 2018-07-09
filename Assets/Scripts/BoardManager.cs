@@ -95,6 +95,7 @@ public class BoardManager : MonoBehaviour {
 
     public Image imgPlayerHp;
     public TextMeshProUGUI txtPlayerHp;
+    public TextMeshProUGUI txtPlayerLv;
     public TextMeshProUGUI txtPlayerBp;
     public TextMeshProUGUI txtPlayerWp;
     public TextMeshProUGUI txtPlayerDp;
@@ -258,22 +259,14 @@ public class BoardManager : MonoBehaviour {
 
         if (DragTiles.Count >= 3)//매칭 성공
 		{
-			foreach (Tile tile in DragTiles)
-			{
-                if (tile.State == ST.eMatch)
-                   tile.State = ST.eDestroy;
-                else {
-                    if(tile.gameObject.tag == "Enemy")
-                    {
-                        tile.GetComponent<Enemy>().SetDamage(sumPlayerDamage);
-                    }
-                }
-			}
+            SetDragTileGain();
 
             for (int x = 0; x < colums; x++)
             {
                 for (int y = 0; y < rows; y++)
                 {
+                    tiles[x, y].NewTile = false;//오래된 타일( 기존 타일 )
+
                     if (tiles[x, y].State == ST.eDestroy)
                     {
                         SetDragSound(tiles[x, y].gameObject.tag);//드래그 사운드 말고 전용 사운드 넣어야 하는데..
@@ -603,7 +596,8 @@ public class BoardManager : MonoBehaviour {
         {
             for (int y = 0; y < rows; y++)
             {
-                if( tiles[x, y].gameObject.tag == "Enemy")
+                //적 타일이면서 신규 타일이 아니면 공격
+                if(( tiles[x, y].gameObject.tag == "Enemy") && (!tiles[x, y].NewTile))
                 {
                     GameObject Obj = Instantiate(EnemyAttack, tiles[x, y].gameObject.transform.position, Quaternion.identity) as GameObject;
                     Damage += tiles[x, y].GetComponent<Enemy>().ap;
@@ -624,6 +618,8 @@ public class BoardManager : MonoBehaviour {
 
     bool GetDownDone()//모든 타일이 다운처리가 끝났는지 확인
     {
+        bool EnemyOnBoard = false;
+
         for (int x = 0; x < colums; x++)
         {
             for (int y = 0; y < rows; y++)
@@ -632,15 +628,52 @@ public class BoardManager : MonoBehaviour {
                 {
                     return false;
                 }
+                //적 타일이 있고 새로 내려온 적 타일이 아닐 경우 적이 공격 턴을 가진다.
+                if ((tiles[x, y].gameObject.tag == "Enemy") && (!tiles[x, y].NewTile))
+                    EnemyOnBoard = true;
             }
+        }
+
+        if(!EnemyOnBoard)//적이 없으면 적 턴 패스
+        {
+            eState = State.eMy;
+            return false;
         }
         return true;
     }
 
     void InitPlayerState()
     {
+        //레벨업 했으면?
+        if(GameManager.instance.player.mexp <= GameManager.instance.player.exp)
+        {
+            GameManager.instance.player.lv++;
+
+            GameManager.instance.player.mexp += 5;
+            GameManager.instance.player.exp = 0;
+            GameManager.instance.player.mhp += 5;
+            GameManager.instance.player.hp = GameManager.instance.player.mhp;
+            GameManager.instance.player.bp++;
+        }
+
+        //방패게이지 다 모았으면?
+        if (GameManager.instance.player.dg >= 20)
+        {
+            GameManager.instance.player.mdp++;
+            GameManager.instance.player.dp = GameManager.instance.player.mdp;
+            GameManager.instance.player.dg = 0;
+        }
+
+        //코인 다 모았으면?
+        if (GameManager.instance.player.cg >= 20)
+        {
+            GameManager.instance.player.wp++;
+            GameManager.instance.player.cg = 0;
+        }
+
         int hp = GameManager.instance.player.hp;
         int maxhp = GameManager.instance.player.mhp;
+        txtPlayerLv.SetText("LV: " + GameManager.instance.player.lv.ToString());
         txtPlayerHp.SetText(hp.ToString() + "/" + maxhp.ToString());
         imgPlayerHp.fillAmount = (float)hp / (float)maxhp;
 
@@ -648,12 +681,12 @@ public class BoardManager : MonoBehaviour {
         txtPlayerDp.SetText(GameManager.instance.player.dp.ToString() + "/" + GameManager.instance.player.mdp.ToString());
         txtPlayerWp.SetText("+" + GameManager.instance.player.wp.ToString());
 
-        imgShieldGage.fillAmount = (float)GameManager.instance.player.dg / (float)100;
-        txtShieldGage.SetText(((GameManager.instance.player.dg / 100) * 100).ToString() + "%");
-        imgCoinGage.fillAmount = (float)GameManager.instance.player.cg / (float)100;
-        txtCoinGage.SetText(((GameManager.instance.player.dg / 100) * 100).ToString() + "%");
+        imgShieldGage.fillAmount = (float)GameManager.instance.player.dg / (float)20;
+        txtShieldGage.SetText((((float)GameManager.instance.player.dg / (float)20) * 100).ToString() + "%");
+        imgCoinGage.fillAmount = (float)GameManager.instance.player.cg / (float)20;
+        txtCoinGage.SetText((((float)GameManager.instance.player.cg / (float)20) * 100).ToString() + "%");
         imgExpGage.fillAmount = (float)GameManager.instance.player.exp / (float)GameManager.instance.player.mexp;
-        txtExpGage.SetText(((GameManager.instance.player.dg / GameManager.instance.player.mexp) * 100).ToString() + "%");
+        txtExpGage.SetText((((float)GameManager.instance.player.exp / (float)GameManager.instance.player.mexp) * 100).ToString() + "%");
     }   
 
     void SetPlayerHp( int Damage )
@@ -667,10 +700,54 @@ public class BoardManager : MonoBehaviour {
             GameManager.instance.player.dp -= Damage;
 
         InitPlayerState();
-        /*
+        
         if(GameManager.instance.player.hp <= 0)
         {
             SceneManager.LoadScene("GameOver");
-        }*/
+        }
+    }
+
+    //드래그한 타일에서 습득 등 처리
+    void SetDragTileGain()
+    {
+        foreach (Tile tile in DragTiles)
+        {
+            if (tile.State == ST.eMatch)
+                tile.State = ST.eDestroy;
+            else
+            {
+                if (tile.gameObject.tag == "Enemy")
+                {
+                    tile.GetComponent<Enemy>().SetDamage(sumPlayerDamage);
+                }
+            }
+
+            switch(tile.gameObject.tag)
+            {
+                case "Enemy":
+                    GameManager.instance.player.exp += tile.GetComponent<Enemy>().exp;
+                    break;
+                case "Shield":
+                    {
+                        GameManager.instance.player.dg++;
+                        GameManager.instance.player.dp++;
+                        if (GameManager.instance.player.dp > GameManager.instance.player.mdp)
+                            GameManager.instance.player.dp = GameManager.instance.player.mdp;
+                    }
+                    break;
+                case "Potion"://일반 플레이어 맥스 체력에 비례하게 회복할까...
+                    {
+                        GameManager.instance.player.hp += (int)((float)GameManager.instance.player.mhp * 0.1f);
+                        if (GameManager.instance.player.hp > GameManager.instance.player.mhp)
+                            GameManager.instance.player.hp = GameManager.instance.player.mhp;
+                    }
+                    break;
+                case "Coin":
+                    GameManager.instance.player.cg++;
+                    break;
+            }
+        }
+
+        InitPlayerState();
     }
 }

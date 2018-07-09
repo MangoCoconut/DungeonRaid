@@ -20,14 +20,22 @@ public class Tile : MonoBehaviour {
         set { eState = value; }
     }
 
+    public bool NewTile
+    {
+        get { return newTile; }
+        set { newTile = value; }
+    }
+
 	int TargetY;
     float t;
+    bool newTile;//내려온 적타일은 공격 안하도록
 
     public Tile()
     {
         State = ST.eNone;
         TargetY = 0;
         t = 0.0f;
+        newTile = true;
     }
     // Use this for initialization
     void Start () {

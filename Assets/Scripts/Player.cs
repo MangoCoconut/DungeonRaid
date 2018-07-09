@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
+    public int lv = 1;
     public int bp = 1;//Base Attack Power
     public int wp = 1;//Weapon Attack Power
-    public int dp = 0;//Defensive Power
-    public int mdp = 0;//Max Defensive Power
+    public int dp = 2;//Defensive Power
+    public int mdp = 2;//Max Defensive Power
     public int hp = 10;//Current Health Power
     public int mhp = 10;//Max Health Power
 
