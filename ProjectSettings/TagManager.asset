@@ -9,6 +9,7 @@ TagManager:
   - Potion
   - Shield
   - Coin
+  - Xp
   layers:
   - Default
   - TransparentFX
@@ -48,6 +49,9 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: UI
+    uniqueID: 3534785463
     locked: 0
   - name: DragOut
     uniqueID: 3394009041

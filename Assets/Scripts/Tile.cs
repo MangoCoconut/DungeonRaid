@@ -8,9 +8,13 @@ public enum ST
     eMatch,
     eDestroy,
     eDown,
+    eGain,
 };
 
 public class Tile : MonoBehaviour {
+
+    public GameObject Explosion;
+    Vector3 TargetPosition;//매칭된 타일이 이동할 곳
 
     private ST eState;
 
@@ -29,6 +33,7 @@ public class Tile : MonoBehaviour {
 	int TargetY;
     float t;
     bool newTile;//내려온 적타일은 공격 안하도록
+    public bool endGain;
 
     public Tile()
     {
@@ -36,6 +41,7 @@ public class Tile : MonoBehaviour {
         TargetY = 0;
         t = 0.0f;
         newTile = true;
+        endGain = false;
     }
     // Use this for initialization
     void Start () {
@@ -44,12 +50,22 @@ public class Tile : MonoBehaviour {
 	void Update () {
        if (State == ST.eDestroy)
         {
+            t = 0.0f;
+
             State = ST.eNone;
-            gameObject.GetComponent<Rigidbody2D>().gravityScale = 5.0f;
+           // gameObject.GetComponent<Rigidbody2D>().gravityScale = 5.0f;
+            if ((gameObject.tag == "Sword") || (gameObject.tag == "Enemy"))
+            {
+                if (gameObject.tag == "Enemy")
+                {
+                    Instantiate(Explosion, gameObject.transform.position, Quaternion.identity);
+                }
+                Destroy(gameObject);
+            }
         }
 
-        if (gameObject.transform.position.y < -4.0f)
-            Destroy(gameObject);
+        //if (gameObject.transform.position.y < -4.0f)
+        //    Destroy(gameObject);
 
         if(State == ST.eDown)
         {
@@ -73,34 +89,41 @@ public class Tile : MonoBehaviour {
             }
         }
 
-    }
-
-    IEnumerator MoveDown()
-    {
-        if (gameObject.transform.position.y <= TargetY)
+        if (State == ST.eGain)
         {
-            State = ST.eNone;
+            if (gameObject.transform.position == TargetPosition)
+            {
+                endGain = true;
+                //GameManager.instance.SetGain(this);
+
+                State = ST.eNone;
+                //Destroy(gameObject);
+            }
+
+            if (gameObject.transform.position != TargetPosition)
+            {
+                //gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, TargetPosition, t);
+                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, TargetPosition, Time.deltaTime * 150.0f);
+                gameObject.transform.localScale = Vector3.Lerp(gameObject.transform.localScale, new Vector3(0.4f, 0.4f, 1), t);
+
+                t += Time.deltaTime * 0.3f;
+            }
         }
 
-        while (gameObject.transform.position.y > TargetY)
-        {
-            gameObject.transform.position = new Vector3(gameObject.transform.position.x,
-                      Mathf.Lerp(gameObject.transform.position.y, TargetY, Time.time * 0.01f), gameObject.transform.position.z);
-
-            yield return null;
-            /*
-            gameObject.transform.position += new Vector3(0, -0.1f, 0);
-
-            yield return new WaitForSeconds(0.000001f);*/
-        }
-        
     }
+
     public void SetMoveDown( int targetY )
     {
         State = ST.eDown;
         TargetY = targetY;
         t = 0.0f;
-        //StartCoroutine("MoveDown");
+    }
+
+    public void SetMoveTarget(Vector3 v3)
+    {
+        State = ST.eGain;
+        TargetPosition = v3;
+        t = 0.0f;
     }
 
     public virtual void Reset() { }

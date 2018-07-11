@@ -105,6 +105,14 @@ public class BoardManager : MonoBehaviour {
     public TextMeshProUGUI txtCoinGage;
     public Image imgExpGage;
     public TextMeshProUGUI txtExpGage;
+
+    public GameObject Exp;
+    public GameObject ExpPosition;
+    public GameObject HpPosition;
+    public GameObject DgPosition;
+    public GameObject CgPosition;
+
+    public List<Tile> GainTiles = new List<Tile>();//습득할 타일
     #endregion
     #region Default Method
     // Use this for initialization
@@ -202,13 +210,15 @@ public class BoardManager : MonoBehaviour {
 			if (tiles[x, y].State == ST.eDestroy)
 			{ // 2
                 tiles[x, y].gameObject.transform.position = new Vector3(tiles[x, y].gameObject.transform.position.x, tiles[x, y].gameObject.transform.position.y, -5.0f);
-                nullCount++;
+                nullCount++;//파괴될 타일 카운트
+                SetMoveTarget(tiles[x, y]);
 			}
 			else
-                tile.Add(tiles[x, y]);
+                tile.Add(tiles[x, y]);//남는 타일 카운트
 		}
 
         int row = rows;//변수값 안변하게 임시변수로..
+        //빌 자리만큼 새로 만듬
         for ( int count = 0; count < nullCount; count++)
         {
             GameObject newObj = Instantiate(GetRandomObject(), new Vector3((float)x, row, 0f), Quaternion.identity) as GameObject;
@@ -253,6 +263,8 @@ public class BoardManager : MonoBehaviour {
         if (eState != State.eMy)
             return;
 
+        GainTiles.Clear();
+
         SetShadowOff();
 
         Damage.text = "";
@@ -265,8 +277,6 @@ public class BoardManager : MonoBehaviour {
             {
                 for (int y = 0; y < rows; y++)
                 {
-                    tiles[x, y].NewTile = false;//오래된 타일( 기존 타일 )
-
                     if (tiles[x, y].State == ST.eDestroy)
                     {
                         SetDragSound(tiles[x, y].gameObject.tag);//드래그 사운드 말고 전용 사운드 넣어야 하는데..
@@ -541,7 +551,10 @@ public class BoardManager : MonoBehaviour {
 
         for (int x = 0; x < colums; x++)
             for (int y = 0; y < rows; y++)
+            {
+                tiles[x, y].NewTile = false;//오래된 타일( 기존 타일 )
                 tiles[x, y].GetComponentInChildren<SpriteRenderer>().color = c;
+            }      
     }
 
 
@@ -599,7 +612,7 @@ public class BoardManager : MonoBehaviour {
                 //적 타일이면서 신규 타일이 아니면 공격
                 if(( tiles[x, y].gameObject.tag == "Enemy") && (!tiles[x, y].NewTile))
                 {
-                    GameObject Obj = Instantiate(EnemyAttack, tiles[x, y].gameObject.transform.position, Quaternion.identity) as GameObject;
+                    Instantiate(EnemyAttack, tiles[x, y].gameObject.transform.position, Quaternion.identity);
                     Damage += tiles[x, y].GetComponent<Enemy>().ap;
                 }
             }
@@ -619,6 +632,11 @@ public class BoardManager : MonoBehaviour {
     bool GetDownDone()//모든 타일이 다운처리가 끝났는지 확인
     {
         bool EnemyOnBoard = false;
+
+        StartCoroutine("SetGain");
+
+        if (GainTiles.Count > 0)
+            return false;
 
         for (int x = 0; x < colums; x++)
         {
@@ -642,33 +660,50 @@ public class BoardManager : MonoBehaviour {
         return true;
     }
 
-    void InitPlayerState()
+    public void InitPlayerState()
     {
         //레벨업 했으면?
-        if(GameManager.instance.player.mexp <= GameManager.instance.player.exp)
+        if(GameManager.instance.player.exp >= GameManager.instance.player.mexp)
         {
             GameManager.instance.player.lv++;
 
-            GameManager.instance.player.mexp += 5;
-            GameManager.instance.player.exp = 0;
-            GameManager.instance.player.mhp += 5;
+            if (GameManager.instance.player.exp > GameManager.instance.player.mexp)
+                GameManager.instance.player.exp = GameManager.instance.player.exp - GameManager.instance.player.mexp;
+            else
+                GameManager.instance.player.exp = 0;
+
+            GameManager.instance.player.mexp = GameManager.instance.player.lv * 20;
+
+            GameManager.instance.player.mhp += 10;
             GameManager.instance.player.hp = GameManager.instance.player.mhp;
             GameManager.instance.player.bp++;
         }
 
         //방패게이지 다 모았으면?
-        if (GameManager.instance.player.dg >= 20)
+        if (GameManager.instance.player.dg >= 30)
         {
+            if (GameManager.instance.player.dg > 30)
+                GameManager.instance.player.dg = GameManager.instance.player.dg - 30;
+            else
+                GameManager.instance.player.dg = 0;
+
             GameManager.instance.player.mdp++;
             GameManager.instance.player.dp = GameManager.instance.player.mdp;
-            GameManager.instance.player.dg = 0;
+            
         }
 
         //코인 다 모았으면?
-        if (GameManager.instance.player.cg >= 20)
+        if (GameManager.instance.player.cg >= 30)
         {
-            GameManager.instance.player.wp++;
-            GameManager.instance.player.cg = 0;
+            if (GameManager.instance.player.cg > 30)
+                GameManager.instance.player.cg = GameManager.instance.player.cg - 30;
+            else
+                GameManager.instance.player.cg = 0;
+
+            if (GameManager.instance.player.lv % 2 == 0)
+                GameManager.instance.player.wp++;
+            else
+                GameManager.instance.player.mdp++;
         }
 
         int hp = GameManager.instance.player.hp;
@@ -681,10 +716,12 @@ public class BoardManager : MonoBehaviour {
         txtPlayerDp.SetText(GameManager.instance.player.dp.ToString() + "/" + GameManager.instance.player.mdp.ToString());
         txtPlayerWp.SetText("+" + GameManager.instance.player.wp.ToString());
 
-        imgShieldGage.fillAmount = (float)GameManager.instance.player.dg / (float)20;
-        txtShieldGage.SetText((((float)GameManager.instance.player.dg / (float)20) * 100).ToString() + "%");
-        imgCoinGage.fillAmount = (float)GameManager.instance.player.cg / (float)20;
-        txtCoinGage.SetText((((float)GameManager.instance.player.cg / (float)20) * 100).ToString() + "%");
+        imgShieldGage.fillAmount = (float)GameManager.instance.player.dg / (float)30;
+        txtShieldGage.SetText((((float)GameManager.instance.player.dg / (float)30) * 100).ToString() + "%");
+
+        imgCoinGage.fillAmount = (float)GameManager.instance.player.cg / (float)30;
+        txtCoinGage.SetText((((float)GameManager.instance.player.cg / (float)30) * 100).ToString() + "%");
+
         imgExpGage.fillAmount = (float)GameManager.instance.player.exp / (float)GameManager.instance.player.mexp;
         txtExpGage.SetText((((float)GameManager.instance.player.exp / (float)GameManager.instance.player.mexp) * 100).ToString() + "%");
     }   
@@ -721,33 +758,69 @@ public class BoardManager : MonoBehaviour {
                     tile.GetComponent<Enemy>().SetDamage(sumPlayerDamage);
                 }
             }
+        }
+    }
 
-            switch(tile.gameObject.tag)
-            {
-                case "Enemy":
-                    GameManager.instance.player.exp += tile.GetComponent<Enemy>().exp;
-                    break;
-                case "Shield":
-                    {
-                        GameManager.instance.player.dg++;
-                        GameManager.instance.player.dp++;
-                        if (GameManager.instance.player.dp > GameManager.instance.player.mdp)
-                            GameManager.instance.player.dp = GameManager.instance.player.mdp;
-                    }
-                    break;
-                case "Potion"://일반 플레이어 맥스 체력에 비례하게 회복할까...
-                    {
-                        GameManager.instance.player.hp += (int)((float)GameManager.instance.player.mhp * 0.1f);
-                        if (GameManager.instance.player.hp > GameManager.instance.player.mhp)
-                            GameManager.instance.player.hp = GameManager.instance.player.mhp;
-                    }
-                    break;
-                case "Coin":
-                    GameManager.instance.player.cg++;
-                    break;
-            }
+    void SetMoveTarget( Tile tile )
+    {
+        if (tile.gameObject.tag == "Sword")
+            return;
+
+        Vector3 vTarget = new Vector3();
+        
+        switch (tile.gameObject.tag)
+        {
+            case "Enemy":
+                //UI의 렌더링 모드 - 스크린공간 오버레이냐 카메라냐에 따라서 설정을 달리 해줘야 한다.
+                //vTarget = Camera.main.ScreenToWorldPoint(HpPosition.transform.position);//오버레이
+                vTarget = ExpPosition.transform.position; //카메라
+                GameObject obj = Instantiate(Exp, tile.transform.position, Quaternion.identity);
+                Tile tempTile = obj.GetComponent<Tile>();
+                tempTile.SetMoveTarget(vTarget);
+
+                int exp = tile.GetComponent<Enemy>().exp;
+                obj.GetComponent<Xp>().exp = tile.GetComponent<Enemy>().exp;
+                exp = obj.GetComponent<Xp>().exp;
+                obj.GetComponentInChildren<TextMeshProUGUI>().SetText(obj.GetComponent<Xp>().exp.ToString() + " XP");
+
+                tile = tempTile;
+                break;
+            case "Potion":
+                //UI의 렌더링 모드 - 스크린공간 오버레이냐 카메라냐에 따라서 설정을 달리 해줘야 한다.
+                //vTarget = Camera.main.ScreenToWorldPoint(HpPosition.transform.position);//오버레이
+                vTarget = HpPosition.transform.position; //카메라
+                tile.SetMoveTarget(vTarget);
+                break;
+            case "Shield":
+                //vTarget = Camera.main.ScreenToWorldPoint(DgPosition.transform.position);
+                vTarget = DgPosition.transform.position;
+                tile.SetMoveTarget(vTarget);
+                break;
+            case "Coin":
+                //vTarget = Camera.main.ScreenToWorldPoint(CgPosition.transform.position);
+                vTarget = CgPosition.transform.position;
+                tile.SetMoveTarget(vTarget);
+                break;
         }
 
-        InitPlayerState();
+        GainTiles.Add(tile);
+    }
+
+    IEnumerator SetGain()
+    {
+        int i = 0;
+        while (GainTiles.Count > 0)
+        {
+            if (GainTiles[i].endGain)
+            {
+                GameManager.instance.SetGain(GainTiles[i]);
+                Destroy(GainTiles[i].gameObject);
+                GainTiles.RemoveAt(i);
+            }
+            else
+                i++;
+
+            yield return new WaitForSeconds(2);
+        }
     }
 }

@@ -31,9 +31,9 @@ public class Enemy : Tile {
 
     void SetState( int level )
     {
-        ap = Random.Range(level, level * 2 - 1);
-        dp = Random.Range(0, level * 2 - 2);
-        hp = Random.Range(level * 2, level * 3 - 1);
+        ap = Random.Range(level, level * 2 - level);
+        dp = Random.Range(0, level * 2 - level - 1);
+        hp = Random.Range(level, level * 2 - level);
         exp = level;
     }
 

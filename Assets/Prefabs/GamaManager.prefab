@@ -57,6 +57,7 @@ MonoBehaviour:
   boardScript: {fileID: 0}
   inputScript: {fileID: 0}
   player: {fileID: 114177959054102294, guid: bc311d390e9a4cd4584b53eb49871615, type: 2}
+  LevelText: {fileID: 0}
 --- !u!114 &114314303930943232
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -103,6 +104,22 @@ MonoBehaviour:
   threshold: 0.001
   LR: {fileID: 0}
   Damage: {fileID: 0}
+  Clip: []
+  TileBackGround: {fileID: 0}
+  EnemyAttack: {fileID: 0}
+  EnemyDamage: {fileID: 0}
+  imgPlayerHp: {fileID: 0}
+  txtPlayerHp: {fileID: 0}
+  txtPlayerLv: {fileID: 0}
+  txtPlayerBp: {fileID: 0}
+  txtPlayerWp: {fileID: 0}
+  txtPlayerDp: {fileID: 0}
+  imgShieldGage: {fileID: 0}
+  txtShieldGage: {fileID: 0}
+  imgCoinGage: {fileID: 0}
+  txtCoinGage: {fileID: 0}
+  imgExpGage: {fileID: 0}
+  txtExpGage: {fileID: 0}
 --- !u!120 &120751245592170334
 LineRenderer:
   m_ObjectHideFlags: 1

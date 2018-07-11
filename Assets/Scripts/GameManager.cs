@@ -69,11 +69,41 @@ public class GameManager : MonoBehaviour {
     {
         DragOutCount++;
 
-        if (DragOutCount == 10)
+        if (DragOutCount == 15)
         {
             level++;
             DragOutCount = 0;
             LevelText.text = "Level: " + Level;
         }
+    }
+
+    public void SetGain( Tile tile )
+    {
+        switch (tile.gameObject.tag)
+        {
+            case "Xp":
+                GameManager.instance.player.exp += tile.GetComponent<Xp>().exp;
+                break;
+            case "Shield":
+                {
+                    GameManager.instance.player.dg++;
+                    GameManager.instance.player.dp++;
+                    if (GameManager.instance.player.dp > GameManager.instance.player.mdp)
+                        GameManager.instance.player.dp = GameManager.instance.player.mdp;
+                }
+                break;
+            case "Potion"://일반 플레이어 맥스 체력에 비례하게 회복할까...
+                {
+                    GameManager.instance.player.hp += (int)((float)GameManager.instance.player.mhp * 0.1f);
+                    if (GameManager.instance.player.hp > GameManager.instance.player.mhp)
+                        GameManager.instance.player.hp = GameManager.instance.player.mhp;
+                }
+                break;
+            case "Coin":
+                GameManager.instance.player.cg++;
+                break;
+        }
+
+        boardScript.InitPlayerState();
     }
 }

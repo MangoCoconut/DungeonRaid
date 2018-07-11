@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4305984090072674}
   - component: {fileID: 212908765619669228}
-  - component: {fileID: 114335829820126044}
+  - component: {fileID: 114090825539417188}
   m_Layer: 0
   m_Name: EnemyAttack
   m_TagString: Untagged
@@ -35,13 +35,13 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1502074396376640}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.2717637, y: -0.9158641, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114335829820126044
+--- !u!114 &114090825539417188
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -49,9 +49,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1502074396376640}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e6a17d5eac7d644ea5ccdb88e0a6a0b, type: 3}
+  m_Script: {fileID: 11500000, guid: 6770ec41a020ca047ae331df8ea73613, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StartScale: 0
+  EndScale: 1
+  AddScale: 0.05
 --- !u!212 &212908765619669228
 SpriteRenderer:
   m_ObjectHideFlags: 1

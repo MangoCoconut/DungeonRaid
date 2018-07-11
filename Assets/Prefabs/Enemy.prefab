@@ -697,6 +697,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 222f7d74645c6d545b8812039e5bff76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Explosion: {fileID: 0}
+  ap: 0
+  dp: 0
+  hp: 0
+  exp: 0
   tmAP: {fileID: 114367905910091394}
   tmDP: {fileID: 114956747545570738}
   tmHP: {fileID: 114970558219823944}
@@ -728,6 +733,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad06ed6b9a8055747a05684d81994f49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Explosion: {fileID: 1181324333835884, guid: 00311cb511208874384fd28711d7391e, type: 2}
 --- !u!114 &114956747545570738
 MonoBehaviour:
   m_ObjectHideFlags: 1
