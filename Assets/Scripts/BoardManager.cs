@@ -113,6 +113,8 @@ public class BoardManager : MonoBehaviour {
     public GameObject CgPosition;
 
     public List<Tile> GainTiles = new List<Tile>();//습득할 타일
+
+    public GameObject Canvas;
     #endregion
     #region Default Method
     // Use this for initialization
@@ -176,6 +178,13 @@ public class BoardManager : MonoBehaviour {
 			int y = (int)randomPosition.y;
 
             tiles[x, y] = newTile.GetComponent<Tile>();
+
+#if ONE_CANVAS
+            if( newTile.tag == "Enemy")
+            {
+                newTile.transform.SetParent(Canvas.transform, true);
+            }
+#endif
         }
     }
 
@@ -226,6 +235,13 @@ public class BoardManager : MonoBehaviour {
             Tile newTile = newObj.GetComponent<Tile>();
             tile.Add(newTile);
             row++;
+
+#if ONE_CANVAS
+            if (newObj.tag == "Enemy")
+            {
+                newObj.transform.SetParent(Canvas.transform, true);
+            }
+#endif
         }
 
         for ( int i = 0; i < tile.Count; i++ )

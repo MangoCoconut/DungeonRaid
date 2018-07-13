@@ -103,7 +103,7 @@ public class Tile : MonoBehaviour {
             if (gameObject.transform.position != TargetPosition)
             {
                 //gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, TargetPosition, t);
-                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, TargetPosition, Time.deltaTime * 150.0f);
+                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, TargetPosition, Time.deltaTime * 200.0f);
                 gameObject.transform.localScale = Vector3.Lerp(gameObject.transform.localScale, new Vector3(0.4f, 0.4f, 1), t);
 
                 t += Time.deltaTime * 0.3f;
