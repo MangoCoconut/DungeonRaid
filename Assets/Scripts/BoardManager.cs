@@ -230,7 +230,7 @@ public class BoardManager : MonoBehaviour {
         //빌 자리만큼 새로 만듬
         for ( int count = 0; count < nullCount; count++)
         {
-            GameObject newObj = Instantiate(GetRandomObject(), new Vector3((float)x, row, 0f), Quaternion.identity) as GameObject;
+            GameObject newObj = Instantiate(GetRandomObject(), new Vector3((float)x, (float)row, 0f), Quaternion.identity) as GameObject;
            // newObj.transform.position = new Vector3((float)x, row, 0f);
             Tile newTile = newObj.GetComponent<Tile>();
             tile.Add(newTile);
@@ -247,7 +247,7 @@ public class BoardManager : MonoBehaviour {
         for ( int i = 0; i < tile.Count; i++ )
 		{
             tiles[x, yStart] = tile[i];
-            tile[i].SetMoveDown(yStart);
+            tile[i].SetMoveDown((float)yStart);
             //objs[i].transform.position = new Vector3((float)x, (float)yStart, -1.0f);
             //tiles[x, yStart].gameObject.transform.position = objs[i].transform.position;
 			yStart++;
@@ -756,7 +756,8 @@ public class BoardManager : MonoBehaviour {
         
         if(GameManager.instance.player.hp <= 0)
         {
-            SceneManager.LoadScene("GameOver");
+            AutoFade.LoadLevel("GameOver", 1.0f, 1.0f, new Color(0, 0, 0));
+            GameManager.instance.SetLevel();
         }
     }
 

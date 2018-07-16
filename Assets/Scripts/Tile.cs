@@ -30,7 +30,7 @@ public class Tile : MonoBehaviour {
         set { newTile = value; }
     }
 
-	int TargetY;
+	float TargetY;
     float t;
     bool newTile;//내려온 적타일은 공격 안하도록
     public bool endGain;
@@ -38,7 +38,7 @@ public class Tile : MonoBehaviour {
     public Tile()
     {
         State = ST.eNone;
-        TargetY = 0;
+        TargetY = 0.0f;
         t = 0.0f;
         newTile = true;
         endGain = false;
@@ -76,8 +76,18 @@ public class Tile : MonoBehaviour {
 
             if (gameObject.transform.position.y > TargetY)
             {
-                gameObject.transform.position = new Vector3(gameObject.transform.position.x,
-                          Mathf.Lerp(gameObject.transform.position.y, TargetY, t), gameObject.transform.position.z);
+                Vector3 vTarget = new Vector3();
+                vTarget = gameObject.transform.position;
+                vTarget.y = Mathf.Lerp(gameObject.transform.position.y, TargetY, t);
+                if(vTarget.y == 0)
+                {
+                    //Enemy를 캔버스의 자식으로 넣으면 position 세팅이 이상해져서 여기서 강제로 상태전환
+                    State = ST.eNone;
+                }
+                gameObject.transform.position = vTarget;
+
+                //gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, 
+                //   new Vector3(gameObject.transform.position.x, TargetY, gameObject.transform.position.z), Time.deltaTime * 5.0f);
 
                 t += Time.deltaTime;
 
@@ -112,10 +122,10 @@ public class Tile : MonoBehaviour {
 
     }
 
-    public void SetMoveDown( int targetY )
+    public void SetMoveDown( float targetY )
     {
         State = ST.eDown;
-        TargetY = targetY;
+        TargetY = (float)targetY;
         t = 0.0f;
     }
 

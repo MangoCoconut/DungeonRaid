@@ -18,10 +18,18 @@ public class Player : MonoBehaviour {
     public int mexp = 20;
 
     public void Init () {
-        //bp = 1;
-        //wp = 1;
-       // dp = 0;
-       // hp = 10;
+        lv = 1;
+        bp = 1;//Base Attack Power
+        wp = 1;//Weapon Attack Power
+        dp = 4;//Defensive Power
+        mdp = 4;//Max Defensive Power
+        hp = 50;//Current Health Power
+        mhp = 50;//Max Health Power
+
+        dg = 0;
+        cg = 0;
+        exp = 0;
+        mexp = 20;
     }
 	
 	// Update is called once per frame

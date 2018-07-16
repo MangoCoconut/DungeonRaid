@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+//현재 안씀
 public class TapToStart : MonoBehaviour {
 
 	// Use this for initialization

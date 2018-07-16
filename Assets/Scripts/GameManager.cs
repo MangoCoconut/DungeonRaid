@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour {
 
     private int DragOutCount = 0;//일정 매칭마다 레벨상승
 
+    int BestLevel = 0;
+
     void Awake()
 	{
 		//Check if instance already exists
@@ -41,18 +43,18 @@ public class GameManager : MonoBehaviour {
         //enemies = new List<Enemy>();
         Screen.SetResolution(1000, 1600, false);
 
-        //Get a component reference to the attached BoardManager script
-        boardScript = GetComponent<BoardManager>();
-		inputScript = GetComponent<InputManager>();
-        player.Init();
-        //Call the InitGame function to initialize the first level 
         InitGame();
+
+        BestLevel = PlayerPrefs.GetInt("BestLevel", 0);
 	}
 
-	void InitGame()
+	public void InitGame()
 	{
-		//enemies.Clear();
-		boardScript.SetupScene(level);
+        boardScript = GetComponent<BoardManager>();
+        inputScript = GetComponent<InputManager>();
+        level = 1;
+        player.Init();
+        boardScript.SetupScene(level);
         LevelText.text = "Level: " + Level;
     }
 	// Use this for initialization
@@ -62,8 +64,7 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+    }
 
     public void SetDragOutCount()//일정 매칭마다 레벨상승
     {
@@ -105,5 +106,16 @@ public class GameManager : MonoBehaviour {
         }
 
         boardScript.InitPlayerState();
+    }
+    public void LoadMain()
+    {
+        AutoFade.LoadLevel("Main", 1.0f, 1.0f, new Color(0, 0, 0));
+    }
+    public void SetLevel()
+    {
+        if(level > BestLevel)
+            PlayerPrefs.SetInt("BestLevel", level);
+
+        PlayerPrefs.SetInt("Level", level);
     }
 }
